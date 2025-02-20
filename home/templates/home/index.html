@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
+  <button id="action-button">Create a product</button>
+  <button id="action-create-webhook">Create a webhook</button>
+  <button id="action-destroy-webhook">Destroy all webhooks</button>
+  <button id="action-logs-webhook">logs webhooks</button>
   <div id="orders">
     <h2>Your recent orders</h2>
     {% if orders %}
@@ -42,4 +46,66 @@
   {% empty %}
     <em class="note">There are no products in your store.</em>
   {% endfor %}
+  <script>
+    document.getElementById("action-button").addEventListener("click", function() {
+        fetch("{% url 'shop_create_product' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",  // CSRF token for security
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log("response: ", data);
+        })
+        .catch(error => console.error("Error:", error));
+    });
+    document.getElementById("action-create-webhook").addEventListener("click", function() {
+        fetch("{% url 'shop_create_webhook' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",  // CSRF token for security
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log("response: ", data);
+        })
+        .catch(error => console.error("Error:", error));
+    });
+    document.getElementById("action-destroy-webhook").addEventListener("click", function() {
+        fetch("{% url 'shop_destroy_webhook' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",  // CSRF token for security
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log("response: ", data);
+        })
+        .catch(error => console.error("Error:", error));
+    });
+    document.getElementById("action-logs-webhook").addEventListener("click", function() {
+        fetch("{% url 'shop_logs_webhook' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",  // CSRF token for security
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log("response: ", data);
+        })
+        .catch(error => console.error("Error:", error));
+    });
+    </script>
 {% endblock %}

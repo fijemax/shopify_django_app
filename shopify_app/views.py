@@ -5,12 +5,14 @@ from django.template import RequestContext
 from django.apps import apps
 import hmac, base64, hashlib, binascii, os
 import shopify
+from django.views.decorators import clickjacking
 
 def _new_session(shop_url):
     api_version = apps.get_app_config('shopify_app').SHOPIFY_API_VERSION
     return shopify.Session(shop_url, api_version)
 
 # Ask user for their ${shop}.myshopify.com address
+@clickjacking.xframe_options_exempt
 def login(request):
     # If the ${shop}.myshopify.com address is already provided in the URL,
     # just skip to authenticate
@@ -18,6 +20,7 @@ def login(request):
         return authenticate(request)
     return render(request, 'shopify_app/login.html', {})
 
+@clickjacking.xframe_options_exempt
 def authenticate(request):
     shop_url = request.GET.get('shop', request.POST.get('shop')).strip()
     if not shop_url:
@@ -30,6 +33,7 @@ def authenticate(request):
     permission_url = _new_session(shop_url).create_permission_url(scope, redirect_uri, state)
     return redirect(permission_url)
 
+@clickjacking.xframe_options_exempt
 def finalize(request):
     api_secret = apps.get_app_config('shopify_app').SHOPIFY_API_SECRET
     params = request.GET.dict()
@@ -64,6 +68,7 @@ def finalize(request):
     request.session.pop('return_to', None)
     return redirect(request.session.get('return_to', reverse('root_path')))
 
+@clickjacking.xframe_options_exempt
 def logout(request):
     request.session.pop('shopify', None)
     messages.info(request, "Successfully logged out.")

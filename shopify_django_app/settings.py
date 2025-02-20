@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 from shopify_app import *
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,7 +29,19 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "*"
+]
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+
+# As of Django 4.0, the values in the CSRF_TRUSTED_ORIGINS setting must start with a scheme.
+# The values in here MUST start with a schema (http://, https://, etc.)
+CSRF_TRUSTED_ORIGINS = [
+    "https://" + os.getenv('APP_URL'),
+    "http://" + os.getenv('APP_URL'),
+]
 
 # Application definition
 
@@ -122,3 +137,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+X_FRAME_OPTIONS = "ALLOWALL"
